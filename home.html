@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./style.css">
+        
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+        <script>
+            function req() {
+                $("#loading").css("display","block");
+
+                var chatValue = $('#text-area').val();
+
+                const chatArr = chatValue.split('\n');
+                console.log(chatArr);
+
+                var send_data = {
+                    chats : chatArr
+                };
+
+                console.log(JSON.stringify(send_data));
+                
+                
+                //ajax 호출
+                $.ajax({
+                    url : "https://6ccb-112-222-148-162.ngrok-free.app",
+                    type : "POST",
+                    headers: {
+                        'Content-Type': `application/json`,
+                        'ngrok-skip-browser-warning': '69420',
+                    },
+                    contentType : "application/json",
+                    data : JSON.stringify(send_data),
+                    success : function(data) {
+                        console.log(data);
+
+                        if(data.status == "True") {
+                            location.href="./result-bad.html";
+                        }
+                        else {
+                            location.href="./result-good.html";
+                        }
+                        $("#loading").css("display","none");
+                    }
+                });
+            }
+
+            function test() {
+                $("#loading").css("display","block");
+            }
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <img src="./img/workpulse_2.png" alt="" style="height: 90px;">
+        </div>
+        <div class="home-main">
+            <p class="home-desc-main">대화(채팅)내용을 아래에 입력해 주세요</p>
+            <p class="home-desc-sub">입력한 내용은 분석용으로만 사용되며, 어떠한 형태로도 저장되지 않습니다</p>
+           <textarea name="" id="text-area" placeholder="민수씨의 입력 예시)&#13;&#10;&#13;&#10;좋은 아침입니다 대리님!&#13;&#10;네! 민수씨 좋은 아침~&#13;&#10;어제 늦게 들어가셨어요?&#13;&#10;네.. 어제 회식이 저녁 늦게 끝났어요 ㅜㅜ&#13;&#10;&#13;&#10;와 같이 대화 내용을 자신의 채팅이 가장 먼저 오도록 입력해주시면 됩니다"></textarea>
+
+            <button id="btn-submit" onclick="req()">분석 시작</button>
+        </div>
+
+        <div id="loading" style="display: none; width: 100%; height: 100%; background-color: black; opacity: 0.4; position: absolute; top: 0; left: 0;">
+            <div class="cube"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </div>
+    </body>
+</html>

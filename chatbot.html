@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./style.css">
+        
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+        <script>
+            
+            $(function(){
+                $("#input-chat").on("keyup",function(key){
+                    if(key.keyCode==13) {
+                        req();
+                    }
+                });
+              });
+            function req() {
+
+                var chatValue = $('#input-chat').val();
+
+                var myChatDiv = "<div class=\"chatbox\"><div class=\"chatbox-mine\">" + chatValue + "</div></div>";
+                $('#chatbot-chat').append(myChatDiv);
+
+                $('#input-chat').val('');
+
+                var send_data = {
+                    model : "solar-1-mini-chat",
+                    messages : [
+                    {
+                        "role" : "user",
+                        "content" : chatValue
+                    }
+                    ]
+                };
+
+                console.log(JSON.stringify(send_data));
+                
+                
+                //ajax 호출
+                $.ajax({
+                    url : "https://api.upstage.ai/v1/solar/chat/completions",
+                    type : "POST",
+                    headers : {
+                        'Authorization': 'Bearer up_p0pliJaeGk6nWNcvS9MqPiL8gYY4q',
+                        'Content-Type': 'application/json'
+                    },
+                    //contentType : "application/json",
+                    data : JSON.stringify(send_data),
+                    success : function(data) {
+                        console.log(data.choices[0].message.content);
+                        var chatbotChatDiv = "<div class=\"chatbox\"><div class=\"chatbox-chatbot\">" + data.choices[0].message.content + "</div></div>";
+                        $('#chatbot-chat').append(chatbotChatDiv);
+                    }
+                });
+            }
+
+            function test() {
+                $("#loading").css("display","block");
+            }
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <img src="./img/workpulse_2.png" alt="" style="height: 90px;">
+        </div>
+        <div class="chatbot-main">
+            <p class="home-desc-main">챗봇과 상담해보세요</p>
+            <p class="home-desc-sub">입력한 내용은 상담용으로만 사용되며, 어떠한 형태로도 저장되지 않습니다. 이 페이지를 나갈 시 상담 내용이 초기화되니 유의하세요</p>
+            <div id="chatbot-chat">
+                <!-- <div class="chatbox">
+                    <div class="chatbox-chatbot">
+                        너무 힘들다
+                    </div>
+                </div>
+                <div>
+                    <div class="chatbox-mine">
+                        너무 힘들다
+                    </div>
+                </div> -->
+            </div>
+            <div style="display: flex; flex-direction: row; margin-top: 20px;">
+                <input type="text" id="input-chat">
+                <div style="width: 20px;"></div>
+                <button id="btn-submit-chat" onclick="req()">입력</button>
+            </div>
+        </div>
+    </body>
+</html>
